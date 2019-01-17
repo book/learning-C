@@ -1,11 +1,5 @@
 #!/bin/sh
 
-if [ "_$1_" == "__" ]; then
-    echo "usage: $0 [-T my_type_a] [-T my_type_b] [-o my_source.c.tdy] my_source.c"
-    echo "for mor info, try 'man indent' or '$0 --help'"
-    exit 1;
-fi;
-
 # extracted from https://github.com/torvalds/linux/blob/master/scripts/Lindent
 LINUX_KERNEL_INDENT_PARAMS="-npro -kr -i8 -ts8 -sob -l80 -ss -ncs -cp1"
 
