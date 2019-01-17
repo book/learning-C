@@ -20,7 +20,7 @@ struct hashtable *create_hashtable(void)
 
 int ok ( int test, char * mesg ) {
     printf( "%sok - %s\n", test ? "" : "not ", mesg );
-    return !!test;
+    return !test;
 }
 
 /* test script */
