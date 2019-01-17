@@ -17,6 +17,11 @@ int ok ( int test, char * mesg ) {
     return !!test;
 }
 
+void destroy_hashtable( struct hashtable **ht ) {
+    free(*ht);
+    *ht = NULL;
+}
+
 int main(int argc, char **argv)
 {
      int fails = 0;
@@ -36,8 +41,11 @@ int main(int argc, char **argv)
  * - get it back
  * - delete it
  * - check it's gone
- * - destroy the hashtable
  */
+
+ /* - destroy the hashtable */
+    destroy_hashtable( &ht );
+    fails += ok( ht == NULL, "hashtable freed" );
 
     exit(!!fails);
 }
