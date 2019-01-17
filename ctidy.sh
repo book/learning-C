@@ -9,6 +9,14 @@ BOOK_PARAMS="--ignore-profile \
  --no-tabs \
  --leave-optional-blank-lines \
  --dont-format-comments \
+ --space-after-for \
+ --space-after-if \
+ --space-after-while \
+ --space-after-parentheses \
+ --braces-on-if-line \
+ --braces-on-func-def-line \
+ --braces-on-struct-decl-line \
+ --dont-cuddle-else \
  --line-length80"
 
 COMMON_CLIB_TYPES="-T FILE -T size_t -T ssize_t \
