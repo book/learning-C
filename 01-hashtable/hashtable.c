@@ -30,13 +30,7 @@ int main(int argc, char **argv)
     }
 
 /* - check it's empty */
-    if( ht->count == 0 ) {
-        printf( "ok - hash is empty\n" );
-    }
-    else {
-        printf( "not ok - hash is empty (%d)\n", ht->count );
-        fails++;
-    }
+    fails += ok( ht->count == 0, "hashtable is empty" );
 /*
  * - add something
  * - get it back
