@@ -29,10 +29,8 @@ int main(int argc, char **argv)
 /* - create a hashtable */
     struct hashtable *ht;
     ht = create_hashtable();
-
-    if (!ht) {
-        exit(1);
-    }
+    fails += ok(ht != NULL, "hashtable created" );
+    if (!ht) { goto BAILOUT; }
 
 /* - check it's empty */
     fails += ok( ht->count == 0, "hashtable is empty" );
@@ -47,5 +45,6 @@ int main(int argc, char **argv)
     destroy_hashtable( &ht );
     fails += ok( ht == NULL, "hashtable freed" );
 
+BAILOUT:
     exit(!!fails);
 }
