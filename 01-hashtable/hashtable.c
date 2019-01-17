@@ -5,6 +5,12 @@ struct hashtable {
     int count;
 };
 
+void destroy_hashtable( struct hashtable **ht ) {
+    free(*ht);
+    *ht = NULL;
+}
+
+/* hashtable implementation */
 struct hashtable *create_hashtable(void)
 {
     struct hashtable *ht = malloc(sizeof(struct hashtable));
@@ -17,11 +23,7 @@ int ok ( int test, char * mesg ) {
     return !!test;
 }
 
-void destroy_hashtable( struct hashtable **ht ) {
-    free(*ht);
-    *ht = NULL;
-}
-
+/* test script */
 int main(int argc, char **argv)
 {
      int fails = 0;
