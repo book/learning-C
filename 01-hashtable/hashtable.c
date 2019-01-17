@@ -12,6 +12,11 @@ struct hashtable *create_hashtable(void)
     return ht;
 }
 
+int ok ( int test, char * mesg ) {
+    printf( "%sok - %s\n", test ? "" : "not ", mesg );
+    return !!test;
+}
+
 int main(int argc, char **argv)
 {
      int fails = 0;
