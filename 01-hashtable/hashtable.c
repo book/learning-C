@@ -6,7 +6,6 @@
 
 /* hashtable implementation */
 struct hashtable {
-    int count;
 
 };
 
@@ -17,12 +16,15 @@ void hashtable_destroy( struct hashtable **ht ) {
 
 struct hashtable *hashtable_create( void ) {
     struct hashtable *ht = malloc( sizeof( struct hashtable ) );
-    ht->count = 0;
     return ht;
 }
 
-void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len,
-                       void *value ) {
+int hashtable_size( struct hashtable *ht ) {
+    assert( ht != NULL );
+    return 0;
+}
+
+void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len, void *value ) {
     assert( ht != NULL );
     assert( key != NULL );
     assert( key_len <= INT_MAX );
@@ -52,7 +54,7 @@ int main( void ) {
     }
 
 /* - check it's empty */
-    fails += ok( ht->count == 0, "hashtable is empty" );
+    fails += ok( hashtable_size(ht) == 0, "hashtable is empty" );
 
 /* - add something */
     const char *key = "foo";
