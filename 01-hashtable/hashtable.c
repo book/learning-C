@@ -18,6 +18,11 @@ struct hashtable *hashtable_create( void ) {
     return ht;
 }
 
+void *hashtable_store( struct hashtable *ht, char *key, size_t key_len, void *value );
+void *hashtable_fetch( struct hashtable *ht, char *key, size_t key_len );
+int hashtable_exists( struct hashtable *ht, char *key, size_t key_len );
+void *hashtable_delete( struct hashtable *ht, char *key, size_t key_len );
+
 /* basic test function */
 int ok( int test, char *mesg ) {
     printf( "%sok - %s\n", test ? "" : "not ", mesg );
