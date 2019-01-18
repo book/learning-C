@@ -8,14 +8,29 @@
 #define HASHTABLE_NUM_BUCKETS 16
 
 struct hashtable_entry {
-    char *key;
-    char *value;
+    const char *key;
+    size_t key_len;
+    void *value;
     struct hashtable_entry *next_entry;
 };
 
 struct hashtable {
-    struct hashtable_entry buckets[HASHTABLE_NUM_BUCKETS];
+    struct hashtable_entry *buckets[HASHTABLE_NUM_BUCKETS];
 };
+
+/* using a very BASIC hash function */
+static int hashtable_index_for( const char *key, int key_len ) {
+    return key_len ? key[0] % HASHTABLE_NUM_BUCKETS : 0;
+}
+
+static struct hashtable_entry * hashtable_entry_for( struct hashtable *ht, const char *key, size_t key_len ) {
+    int i = hashtable_index_for( key, key_len );
+    struct hashtable_entry *entry = ht->buckets[i];
+    if( entry == NULL ) {
+        return ht->buckets[i] = calloc( 1, sizeof( struct hashtable_entry ) );
+    }
+    return entry;
+}
 
 void hashtable_destroy( struct hashtable **ht ) {
     free( *ht );
@@ -32,11 +47,12 @@ int hashtable_size( struct hashtable *ht ) {
     return 0;
 }
 
-void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len, void *value ) {
-    assert( ht != NULL );
-    assert( key != NULL );
-    assert( key_len <= INT_MAX );
-    return value;
+void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len,
+                       void *value ) {
+    struct hashtable_entry *entry = hashtable_entry_for( ht, key, key_len );
+    entry->key = key;
+    entry->key_len = key_len;
+    return entry->value = value;
 }
 
 void *hashtable_fetch( struct hashtable *ht, const char *key, size_t key_len );
