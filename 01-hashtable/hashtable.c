@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
+#include <strings.h>
 #include <limits.h>
 
 /* hashtable implementation */
@@ -27,9 +28,15 @@ static int hashtable_index_for( const char *key, int key_len ) {
 static struct hashtable_entry * hashtable_entry_for( struct hashtable *ht, const char *key, size_t key_len, bool create ) {
     int i = hashtable_index_for( key, key_len );
     struct hashtable_entry *entry = ht->buckets[i];
-    if( entry == NULL ) {
-        if( !create ) return NULL;
-        return ht->buckets[i] = calloc( 1, sizeof( struct hashtable_entry ) );
+    while( entry != NULL ) {
+        if( entry->key_len == key_len && bcmp( entry->key, key, key_len ) == 0 )
+            break;
+        entry = entry->next_entry;
+    }
+    if( !entry && create ) {
+        entry = calloc( 1, sizeof( struct hashtable_entry ) );
+        entry->next_entry = ht->buckets[i];
+        ht->buckets[i] = entry;
     }
     return entry;
 }
@@ -89,11 +96,22 @@ int main( void ) {
 /* - add something */
     const char *key = "foo";
     const char *value = "bar";
+    const char *key2 = "foo2";
+    const char *value2 = "bar2";
+
     ok( value == hashtable_store( ht, key, strlen( key ), ( void * ) value ),
         "Stored value 'bar' in key 'foo'" );
+
+/* - get it back */
     ok( value == hashtable_fetch( ht, key, strlen( key ) ), "Fetched value 'bar' from key 'foo'" );
+    ok( NULL == hashtable_fetch( ht, "quux", 4 ), "Nothing at 'quux'" );
+
+    ok( value2 == hashtable_store( ht, key2, strlen( key2 ), ( void * ) value2 ),
+        "Stored value 'bar2' in key 'foo2'" );
+    ok( value == hashtable_fetch( ht, key, strlen( key ) ), "Fetched value 'bar' from key 'foo'" );
+    ok( value2 == hashtable_fetch( ht, key2, strlen( key2 ) ), "Fetched value 'bar2' from key 'foo2'" );
+
 /*
- * - get it back
  * - delete it
  * - check it's gone
  */
