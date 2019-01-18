@@ -18,7 +18,7 @@ struct hashtable_entry {
 };
 
 struct hashtable {
-    struct hashtable_entry *buckets[HASHTABLE_NUM_BUCKETS];
+    struct hashtable_entry **buckets;
 };
 
 /* using a very BASIC hash function */
@@ -49,12 +49,22 @@ static struct hashtable_entry *hashtable_entry_for(
 }
 
 void hashtable_destroy( struct hashtable **ht ) {
+    for ( int i = 0; i < HASHTABLE_NUM_BUCKETS; i++ ) {
+        struct hashtable_entry *entry = (*ht)->buckets[i];
+        while( entry ) {
+            struct hashtable_entry *goner = entry;
+            entry = entry->next_entry;
+            free( goner );
+        }
+    }
+    free( (*ht)->buckets );
     free( *ht );
     *ht = NULL;
 }
 
 struct hashtable *hashtable_create( void ) {
     struct hashtable *ht = malloc( sizeof( struct hashtable ) );
+    ht->buckets = calloc( HASHTABLE_NUM_BUCKETS, sizeof( struct hashtable_entry * ));
     return ht;
 }
 
