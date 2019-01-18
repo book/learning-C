@@ -1,23 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* hashtable implementation */
 struct hashtable {
     int count;
 
 };
 
-void destroy_hashtable( struct hashtable **ht ) {
+void hashtable_destroy( struct hashtable **ht ) {
     free( *ht );
     *ht = NULL;
 }
 
-/* hashtable implementation */
-struct hashtable *create_hashtable( void ) {
+struct hashtable *hashtable_create( void ) {
     struct hashtable *ht = malloc( sizeof( struct hashtable ) );
     ht->count = 0;
     return ht;
 }
 
+/* basic test function */
 int ok( int test, char *mesg ) {
     printf( "%sok - %s\n", test ? "" : "not ", mesg );
     return !test;
@@ -29,7 +30,7 @@ int main( void ) {
 
 /* - create a hashtable */
     struct hashtable *ht;
-    ht = create_hashtable(  );
+    ht = hashtable_create(  );
     fails += ok( ht != NULL, "hashtable created" );
     if ( !ht ) {
         goto BAILOUT;
@@ -45,7 +46,7 @@ int main( void ) {
  */
 
     /* - destroy the hashtable */
-    destroy_hashtable( &ht );
+    hashtable_destroy( &ht );
     fails += ok( ht == NULL, "hashtable freed" );
 
   BAILOUT:
