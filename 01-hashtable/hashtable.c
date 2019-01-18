@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <limits.h>
 
 /* hashtable implementation */
 struct hashtable {
@@ -18,10 +21,17 @@ struct hashtable *hashtable_create( void ) {
     return ht;
 }
 
-void *hashtable_store( struct hashtable *ht, char *key, size_t key_len, void *value );
-void *hashtable_fetch( struct hashtable *ht, char *key, size_t key_len );
-int hashtable_exists( struct hashtable *ht, char *key, size_t key_len );
-void *hashtable_delete( struct hashtable *ht, char *key, size_t key_len );
+void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len,
+                       void *value ) {
+    assert( ht != NULL );
+    assert( key != NULL );
+    assert( key_len <= INT_MAX );
+    return value;
+}
+
+void *hashtable_fetch( struct hashtable *ht, const char *key, size_t key_len );
+int hashtable_exists( struct hashtable *ht, const char *key, size_t key_len );
+void *hashtable_delete( struct hashtable *ht, const char *key, size_t key_len );
 
 /* basic test function */
 int ok( int test, char *mesg ) {
@@ -43,8 +53,13 @@ int main( void ) {
 
 /* - check it's empty */
     fails += ok( ht->count == 0, "hashtable is empty" );
+
+/* - add something */
+    const char *key = "foo";
+    const char *value = "bar";
+    ok( value == hashtable_store( ht, key, strlen( key ), ( void * ) value ),
+        "Stored value 'bar' in key 'foo'" );
 /*
- * - add something
  * - get it back
  * - delete it
  * - check it's gone
