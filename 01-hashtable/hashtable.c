@@ -13,6 +13,7 @@ struct hashtable_entry {
     const char *key;
     size_t key_len;
     void *value;
+    struct hashtable_entry *prev_entry;
     struct hashtable_entry *next_entry;
 };
 
@@ -25,18 +26,24 @@ static int hashtable_index_for( const char *key, int key_len ) {
     return key_len ? key[0] % HASHTABLE_NUM_BUCKETS : 0;
 }
 
-static struct hashtable_entry * hashtable_entry_for( struct hashtable *ht, const char *key, size_t key_len, bool create ) {
+static struct hashtable_entry *hashtable_entry_for(
+    struct hashtable *ht, const char *key, size_t key_len, bool create )
+{
     int i = hashtable_index_for( key, key_len );
     struct hashtable_entry *entry = ht->buckets[i];
-    while( entry != NULL ) {
-        if( entry->key_len == key_len && bcmp( entry->key, key, key_len ) == 0 )
+    while ( entry != NULL ) {
+        if ( entry->key_len == key_len
+             && bcmp( entry->key, key, key_len ) == 0 )
             break;
         entry = entry->next_entry;
     }
-    if( !entry && create ) {
+    if ( !entry && create ) {
         entry = calloc( 1, sizeof( struct hashtable_entry ) );
         entry->next_entry = ht->buckets[i];
         ht->buckets[i] = entry;
+        if (entry->next_entry) {
+            entry->next_entry->prev_entry = entry;
+        }
     }
     return entry;
 }
@@ -58,19 +65,30 @@ int hashtable_size( struct hashtable *ht ) {
 
 void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len,
                        void *value ) {
-    struct hashtable_entry *entry = hashtable_entry_for( ht, key, key_len, true );
+    struct hashtable_entry *entry =
+        hashtable_entry_for( ht, key, key_len, true );
     entry->key = key;
     entry->key_len = key_len;
     return entry->value = value;
 }
 
 void *hashtable_fetch( struct hashtable *ht, const char *key, size_t key_len ) {
-    struct hashtable_entry * entry = hashtable_entry_for( ht, key, key_len, false );
+    struct hashtable_entry *entry =
+        hashtable_entry_for( ht, key, key_len, false );
     return entry ? entry->value : NULL;
 }
 
 int hashtable_exists( struct hashtable *ht, const char *key, size_t key_len );
-void *hashtable_delete( struct hashtable *ht, const char *key, size_t key_len );
+void *hashtable_delete( struct hashtable *ht, const char *key, size_t key_len ) {
+    struct hashtable_entry *entry =
+        hashtable_entry_for( ht, key, key_len, false );
+    if ( !entry ) return NULL;
+    if ( entry->prev_entry )
+       entry->prev_entry->next_entry = entry->next_entry;
+    void *value = entry->value;
+    free( entry );
+    return value;
+}
 
 /* basic test function */
 int ok( int test, char *mesg ) {
@@ -111,10 +129,11 @@ int main( void ) {
     ok( value == hashtable_fetch( ht, key, strlen( key ) ), "Fetched value 'bar' from key 'foo'" );
     ok( value2 == hashtable_fetch( ht, key2, strlen( key2 ) ), "Fetched value 'bar2' from key 'foo2'" );
 
-/*
- * - delete it
- * - check it's gone
- */
+/* - delete it */
+    ok( value == hashtable_delete( ht, key, strlen(key) ), "delete entry 'foo'" );
+
+/* - check it's gone */
+    ok( hashtable_fetch( ht, key, strlen(key) ) == NULL, "entry 'foo' is really gone" );
 
     /* - destroy the hashtable */
     hashtable_destroy( &ht );
