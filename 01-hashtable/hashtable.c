@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
-#include <strings.h>
 #include <limits.h>
 
 /* hashtable implementation */
@@ -33,7 +32,7 @@ static struct hashtable_entry *hashtable_entry_for(
     struct hashtable_entry *entry = ht->buckets[i];
     while ( entry != NULL ) {
         if ( entry->key_len == key_len
-             && bcmp( entry->key, key, key_len ) == 0 )
+             && memcmp( entry->key, key, key_len ) == 0 )
             break;
         entry = entry->next_entry;
     }
