@@ -5,8 +5,16 @@
 #include <limits.h>
 
 /* hashtable implementation */
-struct hashtable {
+#define HASHTABLE_NUM_BUCKETS 16
 
+struct hashtable_entry {
+    char *key;
+    char *value;
+    struct hashtable_entry *next_entry;
+};
+
+struct hashtable {
+    struct hashtable_entry buckets[HASHTABLE_NUM_BUCKETS];
 };
 
 void hashtable_destroy( struct hashtable **ht ) {
