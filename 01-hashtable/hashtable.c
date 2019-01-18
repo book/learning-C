@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <assert.h>
 #include <limits.h>
@@ -23,10 +24,11 @@ static int hashtable_index_for( const char *key, int key_len ) {
     return key_len ? key[0] % HASHTABLE_NUM_BUCKETS : 0;
 }
 
-static struct hashtable_entry * hashtable_entry_for( struct hashtable *ht, const char *key, size_t key_len ) {
+static struct hashtable_entry * hashtable_entry_for( struct hashtable *ht, const char *key, size_t key_len, bool create ) {
     int i = hashtable_index_for( key, key_len );
     struct hashtable_entry *entry = ht->buckets[i];
     if( entry == NULL ) {
+        if( !create ) return NULL;
         return ht->buckets[i] = calloc( 1, sizeof( struct hashtable_entry ) );
     }
     return entry;
@@ -49,13 +51,17 @@ int hashtable_size( struct hashtable *ht ) {
 
 void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len,
                        void *value ) {
-    struct hashtable_entry *entry = hashtable_entry_for( ht, key, key_len );
+    struct hashtable_entry *entry = hashtable_entry_for( ht, key, key_len, true );
     entry->key = key;
     entry->key_len = key_len;
     return entry->value = value;
 }
 
-void *hashtable_fetch( struct hashtable *ht, const char *key, size_t key_len );
+void *hashtable_fetch( struct hashtable *ht, const char *key, size_t key_len ) {
+    struct hashtable_entry * entry = hashtable_entry_for( ht, key, key_len, false );
+    return entry ? entry->value : NULL;
+}
+
 int hashtable_exists( struct hashtable *ht, const char *key, size_t key_len );
 void *hashtable_delete( struct hashtable *ht, const char *key, size_t key_len );
 
@@ -85,6 +91,7 @@ int main( void ) {
     const char *value = "bar";
     ok( value == hashtable_store( ht, key, strlen( key ), ( void * ) value ),
         "Stored value 'bar' in key 'foo'" );
+    ok( value == hashtable_fetch( ht, key, strlen( key ) ), "Fetched value 'bar' from key 'foo'" );
 /*
  * - get it back
  * - delete it
