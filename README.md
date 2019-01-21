@@ -15,6 +15,7 @@ A combination of pairing sessions, code reviews, home work, transmission.
 * Implement a [hashtable](01-hashtable/) from scratch
 * Implement a double-ended linked list with which you can "push, pop,
   shift, and unshift" items.
+* Write a library providing the hashtable and double-ended linked list
 * Write a custom allocator
 * Bind to a C library using XS
 
@@ -31,3 +32,8 @@ A combination of pairing sessions, code reviews, home work, transmission.
 
 * *[21st Century C](https://learning.oreilly.com/library/view/21st-century-c/9781491904428/)*, Ben Klemens
 * *Obfuscated C and Other Mysteries*, Don Libes
+* *[Structure and Interpretation of Computer Programs](https://mitpress.mit.edu/sites/default/files/sicp/index.html)*, Harold Abelson and Gerald Jay Sussman
+
+## Videos
+
+* [Structure and Interpretation of Computer Programs Video lectures](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/)
