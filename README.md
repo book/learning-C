@@ -28,6 +28,8 @@ A combination of pairing sessions, code reviews, home work, transmission.
 * [make](https://www.gnu.org/software/make/manual/make.html)
 * [valgrind](http://valgrind.org/docs/manual/manual.html)
 
+# Resources
+
 ## Books
 
 * *[21st Century C](https://learning.oreilly.com/library/view/21st-century-c/9781491904428/)*, Ben Klemens
@@ -37,3 +39,7 @@ A combination of pairing sessions, code reviews, home work, transmission.
 ## Videos
 
 * [Structure and Interpretation of Computer Programs Video lectures](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/)
+
+## Others
+
+* [Awesome C](https://github.com/kozross/awesome-c): a curated list of C good stuff.
