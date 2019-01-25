@@ -138,6 +138,12 @@ int main( void ) {
     ok( value == hashtable_fetch( ht, key, strlen( key ) ), "Fetched value 'bar' from key 'foo'" );
     ok( value2 == hashtable_fetch( ht, key2, strlen( key2 ) ), "Fetched value 'bar2' from key 'foo2'" );
 
+/* - weird keys */
+    ok( value == hashtable_store( ht, NULL, 0, (void *) value ), "save with the NULL key" );
+    ok( value == hashtable_fetch( ht, NULL, 0 ), "fetch with the NULL key" );
+    ok( value == hashtable_store( ht, "", 0, (void *) value ), "save with the empty key");
+    ok( value == hashtable_fetch( ht, "", 0), "fetch with the empty key" );
+
 /* - delete it */
     ok( value == hashtable_delete( ht, key, strlen(key) ), "delete entry 'foo'" );
 
