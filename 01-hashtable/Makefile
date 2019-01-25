@@ -14,7 +14,8 @@ cover: hashtable.c
 		-O0 -fprofile-arcs -ftest-coverage \
 		-o hashtable-cover hashtable.c
 	./hashtable-cover
-	gcov --all-blocks --branch-probabilities --branch-counts --display-progress  hashtable.c
+	gcov --all-blocks --branch-probabilities --branch-counts --display-progress --use-colors hashtable.c
+	less -R hashtable.c.gcov
 
 clean:
 	rm -f hashtable *.o *~
