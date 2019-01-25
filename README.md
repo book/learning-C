@@ -11,8 +11,9 @@ A combination of pairing sessions, code reviews, home work, transmission.
 
 ## Pairing projects
 
-* [Hello, World!](00-hello/)
-* Implement a [hashtable](01-hashtable/) from scratch
+* [Hello, World!](00-hello/) (0)
+* Implement a [hashtable](01-hashtable/) from scratch (1)
+* Turn the hashtable into a library (2)
 * Implement a double-ended linked list with which you can "push, pop,
   shift, and unshift" items.
 * Write a library providing the hashtable and double-ended linked list
@@ -27,6 +28,7 @@ A combination of pairing sessions, code reviews, home work, transmission.
 
 * [make](https://www.gnu.org/software/make/manual/make.html)
 * [valgrind](http://valgrind.org/docs/manual/manual.html)
+* [gcov](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html)
 
 # Resources
 
