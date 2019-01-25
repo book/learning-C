@@ -1,3 +1,6 @@
 *.o
 *~
 *.sw*
+*.gcov
+*.gcda
+*.gcno
