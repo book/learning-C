@@ -69,8 +69,15 @@ struct hashtable *hashtable_create( void ) {
 }
 
 int hashtable_size( struct hashtable *ht ) {
-    assert( ht != NULL );
-    return 0;
+    int size = 0;
+    for ( int i = 0; i < HASHTABLE_NUM_BUCKETS; i++ ) {
+        struct hashtable_entry *entry = ht->buckets[i];
+        while( entry ) {
+	    size++;
+            entry = entry->next_entry;
+        }
+    }
+    return size;
 }
 
 void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len,

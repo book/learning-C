@@ -23,7 +23,7 @@ int main( void ) {
     }
 
 /* - check it's empty */
-    fails += ok( hashtable_size(ht) == 0, "hashtable is empty" );
+    fails += ok( hashtable_size(ht) == 0, "hashtable size == 0" );
 
 /* - add something */
     const char *key = "foo";
@@ -33,6 +33,7 @@ int main( void ) {
 
     fails += ok( value == hashtable_store( ht, key, strlen( key ), ( void * ) value ),
         "Stored value 'bar' in key 'foo'" );
+    fails += ok( hashtable_size(ht) == 1, "hashtable size == 1" );
 
 /* - get it back */
     fails += ok( value == hashtable_fetch( ht, key, strlen( key ) ), "Fetched value 'bar' from key 'foo'" );
@@ -40,18 +41,22 @@ int main( void ) {
 
     fails += ok( value2 == hashtable_store( ht, key2, strlen( key2 ), ( void * ) value2 ),
         "Stored value 'bar2' in key 'foo2'" );
+    fails += ok( hashtable_size(ht) == 2, "hashtable size == 2" );
     fails += ok( value == hashtable_fetch( ht, key, strlen( key ) ), "Fetched value 'bar' from key 'foo'" );
     fails += ok( value2 == hashtable_fetch( ht, key2, strlen( key2 ) ), "Fetched value 'bar2' from key 'foo2'" );
 
 /* - weird keys: NULL is considered equal to "" */
     fails += ok( value == hashtable_store( ht, NULL, 0, (void *) value ), "save with the NULL key" );
+    fails += ok( hashtable_size(ht) == 3, "hashtable size == 3" );
     fails += ok( value == hashtable_fetch( ht, NULL, 0 ), "fetch with the NULL key" );
     fails += ok( value2 == hashtable_store( ht, "", 0, (void *) value2 ), "save with the empty key");
+    fails += ok( hashtable_size(ht) == 3, "hashtable size == 3" );
     fails += ok( value2 == hashtable_fetch( ht, "", 0), "fetch with the empty key" );
     fails += ok( value2 == hashtable_fetch( ht, NULL, 0 ), "fetch with the NULL key" );
 
 /* - delete it */
     fails += ok( value == hashtable_delete( ht, key, strlen(key) ), "delete entry 'foo'" );
+    fails += ok( hashtable_size(ht) == 2, "hashtable size == 2" );
 
 /* - check it's gone */
     fails += ok( hashtable_fetch( ht, key, strlen(key) ) == NULL, "entry 'foo' is really gone" );
