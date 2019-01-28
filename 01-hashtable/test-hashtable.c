@@ -46,8 +46,9 @@ int main( void ) {
 /* - weird keys */
     fails += ok( value == hashtable_store( ht, NULL, 0, (void *) value ), "save with the NULL key" );
     fails += ok( value == hashtable_fetch( ht, NULL, 0 ), "fetch with the NULL key" );
-    fails += ok( value == hashtable_store( ht, "", 0, (void *) value ), "save with the empty key");
-    fails += ok( value == hashtable_fetch( ht, "", 0), "fetch with the empty key" );
+    fails += ok( value2 == hashtable_store( ht, "", 0, (void *) value2 ), "save with the empty key");
+    fails += ok( value2 == hashtable_fetch( ht, "", 0), "fetch with the empty key" );
+    fails += ok( value == hashtable_fetch( ht, NULL, 0 ), "fetch with the NULL key" );
 
 /* - delete it */
     fails += ok( value == hashtable_delete( ht, key, strlen(key) ), "delete entry 'foo'" );
