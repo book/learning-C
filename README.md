@@ -37,6 +37,7 @@ A combination of pairing sessions, code reviews, home work, transmission.
 * *[21st Century C](https://learning.oreilly.com/library/view/21st-century-c/9781491904428/)*, Ben Klemens
 * *Obfuscated C and Other Mysteries*, Don Libes
 * *[Structure and Interpretation of Computer Programs](https://mitpress.mit.edu/sites/default/files/sicp/index.html)*, Harold Abelson and Gerald Jay Sussman
+* *[How to Design Programs](https://htdp.org/)*, Matthias Felleisen, Robert Bruce Findler, Matthew Flatt and Shriram Krishnamurthi
 
 ## Videos
 
