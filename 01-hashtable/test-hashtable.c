@@ -43,12 +43,12 @@ int main( void ) {
     fails += ok( value == hashtable_fetch( ht, key, strlen( key ) ), "Fetched value 'bar' from key 'foo'" );
     fails += ok( value2 == hashtable_fetch( ht, key2, strlen( key2 ) ), "Fetched value 'bar2' from key 'foo2'" );
 
-/* - weird keys */
+/* - weird keys: NULL is considered equal to "" */
     fails += ok( value == hashtable_store( ht, NULL, 0, (void *) value ), "save with the NULL key" );
     fails += ok( value == hashtable_fetch( ht, NULL, 0 ), "fetch with the NULL key" );
     fails += ok( value2 == hashtable_store( ht, "", 0, (void *) value2 ), "save with the empty key");
     fails += ok( value2 == hashtable_fetch( ht, "", 0), "fetch with the empty key" );
-    fails += ok( value == hashtable_fetch( ht, NULL, 0 ), "fetch with the NULL key" );
+    fails += ok( value2 == hashtable_fetch( ht, NULL, 0 ), "fetch with the NULL key" );
 
 /* - delete it */
     fails += ok( value == hashtable_delete( ht, key, strlen(key) ), "delete entry 'foo'" );
