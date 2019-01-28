@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <assert.h>
-#include <limits.h>
 
 /* hashtable implementation */
 #define HASHTABLE_NUM_BUCKETS 16
