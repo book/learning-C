@@ -46,3 +46,4 @@ A combination of pairing sessions, code reviews, home work, transmission.
 ## Others
 
 * [Awesome C](https://github.com/kozross/awesome-c): a curated list of C good stuff.
+* [Racket](http://www.racket-lang.org/)
