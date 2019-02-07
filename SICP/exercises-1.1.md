@@ -72,6 +72,12 @@ the behavior of the following procedure:
     (define (a-plus-abs-b a b)
       ((if (> b 0) + -) a b))
 
+Answer:
+
+The result of the `if` is either the procedure `+` or `-` depending on
+the comparison of `b` with `0`. The resulting list is then evaluated,
+either as `(+ a b)` or `(- a b)`.
+
 ## Exercise 1.5.
 
 Ben Bitdiddle has invented a test to determine whether the interpreter
