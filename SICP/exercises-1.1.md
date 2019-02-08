@@ -103,6 +103,12 @@ the same whether the interpreter is using normal or applicative order:
 The predicate expression is evaluated first, and the result determines
 whether to evaluate the consequent or the alternative expression.)
 
+Answer:
+
+* In applicative order, the arguments are evaluated first.  evaluating
+  `(p)` results in an infinite loop.
+* In normal order, `test` is expanded first, and the `if` condition is
+  true, so the first branch is evaluated, resulting in `0`.
 
 ## Exercise 1.6.
 
