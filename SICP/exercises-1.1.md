@@ -38,6 +38,8 @@ to be evaluated in the order in which it is presented.
     >    (+ a 1))
     16
 
+(Answers inline)
+
 ## Exercise 1.2.
 
 Translate the following expression into prefix form
@@ -46,6 +48,7 @@ Translate the following expression into prefix form
     ———————————————————————————————————
            3 ( 6 - 2 ) ( 2 - 7 )
 
+Answer:
 
     (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5)))))
        (* 3 (- 6 2) (- 2 7)))
@@ -54,6 +57,8 @@ Translate the following expression into prefix form
 
 Define a procedure that takes three numbers as arguments and returns
 the sum of the squares of the two larger numbers.
+
+Answer:
 
     (define (sum-squares-of-two-larger-numbers a b c)
             (if (or (> a b) (= a b))
