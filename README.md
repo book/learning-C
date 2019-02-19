@@ -22,7 +22,7 @@ A combination of pairing sessions, code reviews, home work, transmission.
 
 ## Homework projects (to review)
 
-* Solve the [Advent of code](https://adventofcode.com/) in C
+* Solve the [Advent of code](https://adventofcode.com/) [in C](AoC/)
 
 ## Learning tools on the way
 
