@@ -8,7 +8,7 @@ test: $(PROGS)
 		input=`echo $$prog | sed -e 's/one\|two/input/'` ; \
 		echo -n "$$prog: " ; \
 		./$$prog $$input ; \
-	done
+	done | LC_ALL=C sort
 
 clean:
 	rm -rf $(PROGS)
