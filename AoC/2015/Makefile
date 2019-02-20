@@ -1,3 +1,5 @@
+CFLAGS=-std=c11 -g -Wall -Werror -Wextra -Wpedantic
+
 PUZZLES = $(wildcard *-input)
 PROGS   = $(subst -input,-one,$(PUZZLES)) $(subst -input,-two,$(PUZZLES))
 
