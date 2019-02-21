@@ -1,7 +1,6 @@
 CFLAGS=-std=c11 -g -Wall -Werror -Wextra -Wpedantic
 
-PUZZLES = $(wildcard *-input)
-PROGS   = $(subst -input,-one,$(PUZZLES)) $(subst -input,-two,$(PUZZLES))
+PROGS   = $(patsubst %.c,%,$(wildcard *-one.c) $(wildcard *-two.c))
 
 test: $(PROGS)
 	@ for prog in $$( echo $^ | sed -e 's/ /\n/g' | LC_ALL=C sort ) ; do \
@@ -9,6 +8,9 @@ test: $(PROGS)
 		echo -n "$$prog: " ; \
 		./$$prog $$input ; \
 	done
+
+04-%: 04-%.c
+	$(CC) $(CFLAGS) -lgcrypt $< -o $@
 
 clean:
 	rm -rf $(PROGS)
