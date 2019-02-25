@@ -3,8 +3,6 @@
 #include <errno.h>
 #include <math.h>
 
-#define max(a,b) a > b ? a : b
-
 #define chunk 1024
 
 /* Convert from x,y coordinates to ones in a number spiral
@@ -19,21 +17,21 @@
  * that can grow as needed.
  */
 int spiral( int x, int y ) {
-    int k = max( abs( x ), abs( y ) );
+    int k = abs(x) + abs(y) + abs( abs( x ) - abs( y ) );
     if ( abs( x ) > abs( y ) ) {
         if ( x >= 0 ) {
-            return ( 2 * k - 1 ) * ( 2 * k - 1 ) + x + y - 1;
+            return ( k - 1 ) * ( k - 1 ) + x + y - 1;
         }
         else {
-            return ( 2 * k ) * ( 2 * k + 1 ) + x - y;
+            return k * ( k + 1 ) + x - y;
         }
     }
     else {
         if ( y > 0 ) {
-            return ( 2 * k - 1 ) * ( 2 * k ) - x + y;
+            return ( k - 1 ) * k - x + y;
         }
         else {
-            return ( 2 * k ) * ( 2 * k + 1 ) + x - y;
+            return k * ( k + 1 ) + x - y;
         }
     }
 }
