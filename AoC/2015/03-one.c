@@ -72,11 +72,12 @@ int main( int argc, char **argv ) {
         int i = spiral( x, y );
 
         /* expand the memory space if needed */
-        while ( i > size + 1 ) {
-            int *new_space = realloc( space, ( size + chunk ) * sizeof( int ) );
+        while ( i >= size ) {
+            int new_size = ( 1 + i / chunk ) * chunk;
+            int *new_space = realloc( space, new_size * sizeof( int ) );
             if ( new_space ) {
                 space = new_space;
-                for ( int j = size; j < size + chunk; j++ ) {
+                for ( int j = size; j < new_size; j++ ) {
                     space[j] = 0;
                 }
             }
@@ -84,7 +85,7 @@ int main( int argc, char **argv ) {
                 perror( NULL );
                 exit( 1 );
             }
-            size += chunk;
+            size = new_size;
         }
         space[i]++;
     }

@@ -3,8 +3,6 @@
 #include <errno.h>
 #include <math.h>
 
-#define max(a,b) a > b ? a : b
-
 #define chunk 1024
 
 /* Convert from x,y coordinates to ones in a number spiral
@@ -19,21 +17,21 @@
  * that can grow as needed.
  */
 int spiral( int x, int y ) {
-    int k = max( abs( x ), abs( y ) );
+    int k = abs(x) + abs(y) + abs( abs( x ) - abs( y ) );
     if ( abs( x ) > abs( y ) ) {
         if ( x >= 0 ) {
-            return ( 2 * k - 1 ) * ( 2 * k - 1 ) + x + y - 1;
+            return ( k - 1 ) * ( k - 1 ) + x + y - 1;
         }
         else {
-            return ( 2 * k ) * ( 2 * k + 1 ) + x - y;
+            return k * ( k + 1 ) + x - y;
         }
     }
     else {
         if ( y > 0 ) {
-            return ( 2 * k - 1 ) * ( 2 * k ) - x + y;
+            return ( k - 1 ) * k - x + y;
         }
         else {
-            return ( 2 * k ) * ( 2 * k + 1 ) + x - y;
+            return k * ( k + 1 ) + x - y;
         }
     }
 }
@@ -76,11 +74,12 @@ int main( int argc, char **argv ) {
         int i = spiral( x[who], y[who] );
 
         /* expand the memory space if needed */
-        while ( i > size + 1 ) {
-            int *new_space = realloc( space, ( size + chunk ) * sizeof( int ) );
+        while ( i >= size ) {
+            int new_size = ( 1 + i / chunk ) * chunk;
+            int *new_space = realloc( space, new_size * sizeof( int ) );
             if ( new_space ) {
                 space = new_space;
-                for ( int j = size; j < size + chunk; j++ ) {
+                for ( int j = size; j < new_size; j++ ) {
                     space[j] = 0;
                 }
             }
@@ -88,11 +87,11 @@ int main( int argc, char **argv ) {
                 perror( NULL );
                 exit( 1 );
             }
-            size += chunk;
+            size = new_size;
         }
         space[i]++;
-	who++;
-	who %= 2;
+        who++;
+        who %= 2;
     }
 
     int minimum_one = 0;
