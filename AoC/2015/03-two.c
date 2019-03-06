@@ -37,11 +37,11 @@ int spiral( int x, int y ) {
 }
 
 int main( int argc, char **argv ) {
-    argc = argc;
     char c;
-    FILE *file = fopen( argv[1], "r" );
+    const char *filename = (argc > 1) ? argv[1] : "03-input";
+    FILE *file = fopen( filename, "r" );
     if ( !file ) {
-        perror( argv[1] );
+        perror( filename );
         exit( 1 );
     }
 

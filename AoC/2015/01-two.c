@@ -6,10 +6,10 @@ int main( int argc, char **argv ) {
     int floor = 0;
     int position = 1;
     char c;
-    argc = argc;
-    FILE *file = fopen( argv[1], "r" );
+    const char *filename = (argc > 1) ? argv[1] : "01-input";
+    FILE *file = fopen( filename, "r" );
     if ( !file ) {
-        perror( argv[1] );
+        perror( filename );
         exit( 1 );
     }
     while ( ( c = fgetc( file ) ) != EOF ) {

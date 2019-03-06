@@ -13,12 +13,12 @@ int cmp( const void *A, const void *B ) {
 }
 
 int main( int argc, char **argv ) {
-    argc = argc;
     int total = 0;
     int dim[3];
-    FILE *file = fopen( argv[1], "r" );
+    const char *filename = (argc > 1) ? argv[1] : "02-input";
+    FILE *file = fopen( filename, "r" );
     if ( !file ) {
-        perror( argv[1] );
+        perror( filename );
         exit( 1 );
     }
 
