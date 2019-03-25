@@ -1,3 +1,7 @@
+Homework for session 6 (2019-04-01):
+
+* finish the hashtable reallocation function
+
 Homework for session 5 (2019-03-18):
 
 * find what the error was with realloc for AoC/2015/03
