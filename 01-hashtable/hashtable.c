@@ -4,9 +4,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-/* hashtable implementation */
-#define HASHTABLE_NUM_BUCKETS 16
-
 struct hashtable_entry {
     const char *key;
     size_t key_len;
@@ -16,18 +13,20 @@ struct hashtable_entry {
 };
 
 struct hashtable {
+    size_t num_buckets;
     struct hashtable_entry **buckets;
 };
 
 /* using a very BASIC hash function */
-static int hashtable_index_for( const char *key, int key_len ) {
-    return key_len ? key[0] % HASHTABLE_NUM_BUCKETS : 0;
+static size_t hashtable_index_for( struct hashtable *ht, const char *key, int key_len ) {
+    unsigned int hash_code = key_len ? key[0] : 0; /* hash function */
+    return hash_code % ht->num_buckets;
 }
 
 static struct hashtable_entry *hashtable_entry_for(
     struct hashtable *ht, const char *key, size_t key_len, bool create )
 {
-    int i = hashtable_index_for( key, key_len );
+    size_t i = hashtable_index_for( ht, key, key_len );
     struct hashtable_entry *entry = ht->buckets[i];
     while ( entry != NULL ) {
         if ( entry->key_len == key_len
@@ -47,7 +46,7 @@ static struct hashtable_entry *hashtable_entry_for(
 }
 
 void hashtable_destroy( struct hashtable **ht ) {
-    for ( int i = 0; i < HASHTABLE_NUM_BUCKETS; i++ ) {
+    for ( size_t i = 0; i < (*ht)->num_buckets; i++ ) {
         struct hashtable_entry *entry = (*ht)->buckets[i];
         while( entry ) {
             struct hashtable_entry *goner = entry;
@@ -62,13 +61,14 @@ void hashtable_destroy( struct hashtable **ht ) {
 
 struct hashtable *hashtable_create( void ) {
     struct hashtable *ht = malloc( sizeof( struct hashtable ) );
-    ht->buckets = calloc( HASHTABLE_NUM_BUCKETS, sizeof( struct hashtable_entry * ));
+    ht->num_buckets = 16;
+    ht->buckets = calloc( ht->num_buckets, sizeof( struct hashtable_entry * ));
     return ht;
 }
 
 int hashtable_size( struct hashtable *ht ) {
     int size = 0;
-    for ( int i = 0; i < HASHTABLE_NUM_BUCKETS; i++ ) {
+    for ( size_t i = 0; i < ht->num_buckets; i++ ) {
         struct hashtable_entry *entry = ht->buckets[i];
         while( entry ) {
 	    size++;
