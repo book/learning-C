@@ -14,12 +14,54 @@ struct hashtable_entry {
 
 struct hashtable {
     size_t num_buckets;
+    size_t num_items;
     struct hashtable_entry **buckets;
 };
 
-/* using a very BASIC hash function */
+/* some private functions */
+static void hashtable_resize( struct hashtable *ht, size_t num_buckets ) {
+    struct hashtable_entry **buckets = calloc( num_buckets, sizeof( struct hashtable_entry * ));
+    if (!buckets) {
+        exit(EXIT_FAILURE);
+    }
+
+    /* visit the hashtable and copy the entries over */
+    for ( size_t i = 0; i < ht->num_buckets; i++ ) {
+        struct hashtable_entry *entry = ht->buckets[i];
+        while( entry ) {
+
+            /* careful, this contains a copy of the hashing function */
+            unsigned int hash_code = entry->key_len ? (entry->key)[0] : 0; /* a very BASIC hash function */
+            size_t i = hash_code % num_buckets;
+
+            struct hashtable_entry *new_entry = calloc( 1, sizeof( struct hashtable_entry ) );
+            if (!new_entry) {
+                exit(EXIT_FAILURE);
+            }
+            new_entry->key = entry->key;
+            new_entry->key_len = entry->key_len;
+            new_entry->value = entry->value;
+            new_entry->next_entry = buckets[i];
+            buckets[i] = new_entry;
+            if (new_entry->next_entry) {
+                new_entry->next_entry->prev_entry = new_entry;
+            }
+
+            /* drop the entry and move on */
+            struct hashtable_entry *goner = entry;
+            entry = entry->next_entry;
+            free( goner );
+        }
+    }
+    free( ht->buckets );
+
+    /* replace */
+    ht->num_buckets = num_buckets;
+    ht->buckets = buckets;
+}
+
 static size_t hashtable_index_for( struct hashtable *ht, const char *key, int key_len ) {
-    unsigned int hash_code = key_len ? key[0] : 0; /* hash function */
+    unsigned int hash_code = key_len ? key[0] : 0; /* a very BASIC hash function */
     return hash_code % ht->num_buckets;
 }
 
@@ -36,13 +78,39 @@ static struct hashtable_entry *hashtable_entry_for(
     }
     if ( !entry && create ) {
         entry = calloc( 1, sizeof( struct hashtable_entry ) );
+        if (! entry) {
+            exit(EXIT_FAILURE);
+        }
         entry->next_entry = ht->buckets[i];
+        entry->key = calloc( 1, key_len + 1 );
+        if (! entry->key ) {
+            exit(EXIT_FAILURE);
+        }
+        memcpy( (char *)entry->key, key, key_len);
+	*(char*)(entry->key + key_len)='\0';
+        entry->key_len = key_len;
         ht->buckets[i] = entry;
+        ht->num_items++;
         if (entry->next_entry) {
             entry->next_entry->prev_entry = entry;
         }
     }
     return entry;
+}
+
+/* public interface */
+struct hashtable *hashtable_create( void ) {
+    struct hashtable *ht = malloc( sizeof( struct hashtable ) );
+    if (!ht) {
+        exit(EXIT_FAILURE);
+    }
+    ht->num_buckets = 16;
+    ht->num_items = 0;
+    ht->buckets = calloc( ht->num_buckets, sizeof( struct hashtable_entry * ));
+    if (! ht->buckets) {
+        exit(EXIT_FAILURE);
+    }
+    return ht;
 }
 
 void hashtable_destroy( struct hashtable **ht ) {
@@ -59,31 +127,17 @@ void hashtable_destroy( struct hashtable **ht ) {
     *ht = NULL;
 }
 
-struct hashtable *hashtable_create( void ) {
-    struct hashtable *ht = malloc( sizeof( struct hashtable ) );
-    ht->num_buckets = 16;
-    ht->buckets = calloc( ht->num_buckets, sizeof( struct hashtable_entry * ));
-    return ht;
-}
-
 int hashtable_size( struct hashtable *ht ) {
-    int size = 0;
-    for ( size_t i = 0; i < ht->num_buckets; i++ ) {
-        struct hashtable_entry *entry = ht->buckets[i];
-        while( entry ) {
-	    size++;
-            entry = entry->next_entry;
-        }
-    }
-    return size;
+    return ht->num_items;
 }
 
 void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len,
                        void *value ) {
+    if ( ht->num_items > ht->num_buckets * .8 ) {
+        hashtable_resize( ht, 2 * ht->num_buckets );
+    }
     struct hashtable_entry *entry =
         hashtable_entry_for( ht, key, key_len, true );
-    entry->key = key;
-    entry->key_len = key_len;
     return entry->value = value;
 }
 
@@ -101,6 +155,8 @@ void *hashtable_delete( struct hashtable *ht, const char *key, size_t key_len ) 
     if ( entry->prev_entry )
        entry->prev_entry->next_entry = entry->next_entry;
     void *value = entry->value;
+    ht->num_items--;
+    free( (char*) entry->key );
     free( entry );
     return value;
 }
