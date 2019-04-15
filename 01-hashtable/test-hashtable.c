@@ -61,6 +61,23 @@ int main( void ) {
 /* - check it's gone */
     fails += ok( hashtable_fetch( ht, key, strlen(key) ) == NULL, "entry 'foo' is really gone" );
 
+/* add 100 items, forcing a few resizes */
+    for ( int i = 0; i < 100; i++ ) {
+	char key[4];
+        sprintf( key, "%d", i );
+	char * val = malloc( strlen(key) + 1 );
+	sprintf( val, "%d", i );
+	printf("%s -> %s\n", key, (char *)hashtable_fetch( ht, key, strlen(key) ));
+	printf("%s => %s\n", key, val);
+        hashtable_store( ht, key, strlen(key), (void*) val );
+	printf("%s -> %s\n---\n", key, (char *)hashtable_fetch( ht, key, strlen(key) ));
+    }
+    fails += ok( hashtable_size(ht) == 102, "hashtable size == 102" );
+
+/* check we can find some items */
+    fails += ok( strcmp( hashtable_fetch( ht, "97", 0), "97"), "key 97 added" );
+    fails += ok( hashtable_size(ht) == 102, "hashtable size == 102" );
+
     /* - destroy the hashtable */
     hashtable_destroy( &ht );
     fails += ok( ht == NULL, "hashtable freed" );
