@@ -1,3 +1,16 @@
+Homework for session 9 (2019-05-13):
+* build an iterator function
+* add a hash function
+* optional: make my own and use the code below to compare with other
+  https://github.com/ericherman/code-snips/blob/master/c/string-hashing.c
+* solve some AoC 2015 puzzles using my hash
+
+Homework for session 8 (2019-05-06):
+
+Homework for session 7 (2019-04-15):
+
+* make the hashtable keep a copy of each key, and manage that memory itself
+
 Homework for session 6 (2019-04-01):
 
 * finish the hashtable reallocation function

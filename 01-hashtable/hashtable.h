@@ -19,4 +19,11 @@ void *hashtable_fetch( struct hashtable *ht, const char *key, size_t key_len );
 int hashtable_exists( struct hashtable *ht, const char *key, size_t key_len );
 
 void *hashtable_delete( struct hashtable *ht, const char *key, size_t key_len );
+
+/*
+ * TODO
+ * - iteration (internal, external)
+ * - clear
+ * - better hashing
+ */
 #endif /* HASHTABLE_H */
