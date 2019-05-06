@@ -67,16 +67,21 @@ int main( void ) {
         sprintf( key, "%d", i );
 	char * val = malloc( strlen(key) + 1 );
 	sprintf( val, "%d", i );
-	printf("%s -> %s\n", key, (char *)hashtable_fetch( ht, key, strlen(key) ));
-	printf("%s => %s\n", key, val);
         hashtable_store( ht, key, strlen(key), (void*) val );
-	printf("%s -> %s\n---\n", key, (char *)hashtable_fetch( ht, key, strlen(key) ));
     }
     fails += ok( hashtable_size(ht) == 102, "hashtable size == 102" );
 
 /* check we can find some items */
     fails += ok( strcmp( hashtable_fetch( ht, "97", 0), "97"), "key 97 added" );
     fails += ok( hashtable_size(ht) == 102, "hashtable size == 102" );
+
+/* check we can find all items */
+    for ( int i = 99; i >= 0; i-- ) {
+	char key[4];
+        sprintf( key, "%d", i );
+	char * val = malloc( strlen(key) + 1 );
+        fails += ok( strcmp( hashtable_fetch( ht, key, strlen(key) ), val ), key );
+    }
 
     /* - destroy the hashtable */
     hashtable_destroy( &ht );
