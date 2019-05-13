@@ -10,7 +10,7 @@ struct hashtable *hashtable_create( void );
 
 void hashtable_destroy( struct hashtable **ht );
 
-int hashtable_size( struct hashtable *ht );
+size_t hashtable_size( struct hashtable *ht );
 
 void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len, void *value );
 

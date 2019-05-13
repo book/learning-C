@@ -127,7 +127,7 @@ void hashtable_destroy( struct hashtable **ht ) {
     *ht = NULL;
 }
 
-int hashtable_size( struct hashtable *ht ) {
+size_t hashtable_size( struct hashtable *ht ) {
     return ht->num_items;
 }
 
