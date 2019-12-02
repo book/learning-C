@@ -50,6 +50,18 @@ int main( int argc, char **argv ) {
         printf( "%i\n", run( program, 12, 2 ) );
     }
     else {
+        int noun = 0;
+        while ( 1 ) {
+            int verb = 0;
+            while ( verb <= noun ) {
+                int output = run( program, noun, verb );
+                if ( output == 19690720 ) {
+                    printf( "%i\n", 100 * noun + verb );
+                    exit( 0 );
+                }
+                verb++;
+            }
+            noun++;
+        }
     }
-
 }
