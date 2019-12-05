@@ -20,15 +20,16 @@ int main( int argc, char **argv ) {
 
     // run the program
     if ( puzzle == 1 ) {
-        printf( "%i\n", run( program, 12, 2 ) );
+        int *state = run( program, 12, 2 );
+        printf( "%i\n", state[0] );
     }
     else {
         int noun = 0;
         while ( 1 ) {
             int verb = 0;
             while ( verb <= noun ) {
-                int output = run( program, noun, verb );
-                if ( output == 19690720 ) {
+                int *state = run( program, noun, verb );
+                if ( state[0] == 19690720 ) {
                     printf( "%i\n", 100 * noun + verb );
                     exit( 0 );
                 }
