@@ -3,12 +3,7 @@
 
 // the Intcode computer
 
-int *run( int *source, int val1, int val2 ) {
-    int *program = malloc( size * sizeof( int ) );
-    memcpy( program, source, size );
-    program[1] = val1;
-    program[2] = val2;
-
+void run( int *program ) {
     int pc = 0;
     while ( 1 ) {
         switch ( program[pc] ) {
@@ -23,7 +18,7 @@ int *run( int *source, int val1, int val2 ) {
             pc += 4;
             break;
         case 99:
-            return program;
+            return;
         default:
             fprintf( stderr, "Unknown opcode: %i\n", program[pc] );
             exit( EXIT_FAILURE );
