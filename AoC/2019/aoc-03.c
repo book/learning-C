@@ -37,25 +37,51 @@ int spiral( int x, int y ) {
     }
 }
 
-void update_panel( int **panel_ptr, int x, int y ) {
-    int *panel = *panel_ptr;
-    int pos = spiral( x, y );
-    while ( pos > panel[0] ) {
-        int new_size = ( 1 + pos / chunk ) * chunk + 1;
-        int *new_panel = realloc( panel, new_size * sizeof( int ) );
-        if ( new_panel ) {
-            *panel_ptr = panel = new_panel;
-            for ( int j = panel[0] + 1; j <= new_size; j++ ) {
-                panel[j] = 0;
-            }
-            panel[0] = new_size - 1;
-        }
-        else {
-            perror( NULL );
-            exit( 1 );
+struct cell {
+    int position;               // spiral coordinate
+    int distance;               // distance from origin
+    int steps;                  // number of steps to get there
+};
+
+struct ribbon {
+    int size;                   // number of available cell slots
+    int steps;                  // number of actual cells
+    struct cell **cells;
+};
+
+int cmp_cells( const void *a, const void *b ) {
+    struct cell A = *( struct cell * )a;
+    struct cell B = *( struct cell * )b;
+    printf( "cmp [ %i %i %i ] [ %i %i %i ]\n",
+         A.position, A.distance, A.steps,
+         B.position, B.distance, B.steps );
+    return A.position < B.position ? -1
+         : A.position > B.position ?  1
+	 :                            0;
+            //( ( struct cell * ) a )->position, ( ( struct cell * ) a )->distance, ( ( struct cell * ) a )->steps,
+            //( ( struct cell * ) b )->position, ( ( struct cell * ) b )->distance, ( ( struct cell * ) b )->steps );
+    //return ( ( struct cell * ) a )->position <
+    //    ( ( struct cell * ) b )->position ? -1 : ( ( struct cell * ) a )->
+    //    position > ( ( struct cell * ) b )->position ? 1 : 0;
+}
+
+void extend_wire( struct ribbon *strip, int x, int y, int steps ) {
+    if ( steps > strip->size - 1 ) {
+        int new_size = strip->size + chunk;
+        struct cell **new_cells =
+            realloc( strip->cells, new_size * sizeof( struct cell * ) );
+        if ( new_cells ) {
+            strip->size = new_size;
+            strip->cells = new_cells;
         }
     }
-    panel[pos + 1] = abs( x ) + abs( y );
+
+    // add the newly visited cell at the end
+    strip->steps = steps;
+    strip->cells[steps] = malloc( sizeof( struct cell ) );
+    strip->cells[steps]->position = spiral( x, y );
+    strip->cells[steps]->distance = abs( x ) + abs( y );
+    strip->cells[steps]->steps = steps;
 }
 
 int main( int argc, char **argv ) {
@@ -63,18 +89,24 @@ int main( int argc, char **argv ) {
     FILE *file;
     parse_options( argc, argv, 3, &puzzle, &file );
 
-    // load the wire paths
-    int **panel;
-    panel = malloc( 2 * sizeof( int * ) );
-    panel[0] = malloc( 2 * sizeof( int ) );
-    panel[1] = malloc( 2 * sizeof( int ) );
-    panel[0][0] = panel[1][0] = 1;      // keep track of the panel size
-    panel[0][1] = panel[1][1] = 0;      // origin is at distance 0
+    // initialize the ribbon / strip / wire
+    struct ribbon strip[2];
+    for ( int j = 0; j <= 1; j++ ) {
+        strip[j].cells = malloc( chunk * sizeof( struct cell * ) );
+        strip[j].size = chunk;  // keep track of the strip size
+        strip[j].steps = 0;     // start at the origin
+        strip[j].cells[0] = malloc( sizeof( struct cell ) );    // origin
+        strip[j].cells[0]->distance = 0;        // origin at distance 0
+        strip[j].cells[0]->steps = 0;   // origin at step 0
+    }
 
+    // load the wire paths
     int i = 0;
     int x, y;
+    int total_steps;
     char dir;
     x = y = 0;
+    total_steps = 0;
     while ( ( dir = fgetc( file ) ) != EOF ) {
         int steps;
         int res = fscanf( file, "%i", &steps );
@@ -85,22 +117,22 @@ int main( int argc, char **argv ) {
         switch ( dir ) {
         case 'U':
             for ( int j = 0; j < steps; j++ ) {
-                update_panel( &panel[i], x, ++y );
+                extend_wire( &strip[i], x, ++y, ++total_steps );
             }
             break;
         case 'D':
             for ( int j = 0; j < steps; j++ ) {
-                update_panel( &panel[i], x, --y );
+                extend_wire( &strip[i], x, --y, ++total_steps );
             }
             break;
         case 'R':
             for ( int j = 0; j < steps; j++ ) {
-                update_panel( &panel[i], ++x, y );
+                extend_wire( &strip[i], ++x, y, ++total_steps );
             }
             break;
         case 'L':
             for ( int j = 0; j < steps; j++ ) {
-                update_panel( &panel[i], --x, y );
+                extend_wire( &strip[i], --x, y, ++total_steps );
             }
             break;
         default:
@@ -117,6 +149,7 @@ int main( int argc, char **argv ) {
             break;
         case '\n':
             x = y = 0;          // start at origin on next panel
+            total_steps = 0;
             i++;
             break;
         default:
@@ -125,18 +158,50 @@ int main( int argc, char **argv ) {
         }
     }
 
-    // no need to go further than the smallest panel
-    int limit = panel[0][0] < panel[1][0] ? panel[0][0] : panel[1][0];
+    printf( "done reading\n");
 
-    // find the smallest crossing
-    int min = limit;            // sentinel
-    for ( int j = 2; j <= limit; j++ ) {
-        if ( panel[0][j] != 0 && panel[0][j] == panel[1][j]
-             && panel[0][j] < min ) {
-            min = panel[0][j];
-        }
+    // dump
+    for ( i = 0; i <= 1 ; i ++ ) {
+    printf( "size = %i, steps = %i\n", strip[0].size, strip[0].steps );
+    for ( int j = 0; j <= strip[i].steps ; j++ ) {
+	printf( "[ %i %i %i ] ", strip[i].cells[j]->position, strip[i].cells[j]->distance, strip[i].cells[j]->steps );
+    }
+    printf( "\n");
     }
 
+    // sort the cells by spiral coordinates
+    for ( i = 0; i <= 1; i++ ) {
+        //qsort( strip[i].cells[1], strip[i].steps , sizeof( struct cell *), &cmp_cells );
+        qsort( strip[i].cells[1], 3 , sizeof( struct cell *), &cmp_cells );
+	printf("--\n");
+    }
+    printf( "done sorting\n");
+
+    // no need to go further than the length of the smallest wire
+    int limit = strip[0].steps < strip[1].steps ? strip[0].steps : strip[1].steps;
+
+    // find the closest intersection
+    int min = limit;            // sentinel
+    int j = i = 1;              // start position on both wires
+    while ( i < limit && j < limit ) {
+	// intersection
+	if ( strip[0].cells[i]->position == strip[1].cells[j]->position ) {
+            if ( puzzle == 1 && strip[0].cells[i]->distance < min ) {
+                min = strip[0].cells[i]->distance;
+	    }
+	    else {
+		    // TODO
+	    }
+	    i++;
+	}
+	else  if ( strip[0].cells[i]->position < strip[1].cells[j]->position ) {
+	    i++;
+	}
+	else {
+	    j++;
+	}
+    }
     printf( "%i\n", min );
+
     exit( 0 );
 }
