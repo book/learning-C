@@ -11,9 +11,9 @@ int decode( int *mode, int input ) {
 }
 
 // the Intcode computer
-void run( int *program ) {
+void run( int *program, int input ) {
     int pc = 0;
-    int opcode, input;
+    int opcode;
     int mode[PARAMS];
     while ( 1 ) {
         opcode = decode( mode, program[pc] );
@@ -31,7 +31,6 @@ void run( int *program ) {
             pc += 4;
             break;
         case 3:
-            input = 1; // TEST
             program[program[pc + 1]] = input;
             pc += 2;
             break;

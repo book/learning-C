@@ -20,5 +20,7 @@ int main( int argc, char **argv ) {
     // run the program
     int *program = malloc( size * sizeof( int ) );
     memcpy( program, source, size );
-    run( program );
+    if ( puzzle == 1 ) {
+        run( program, 1 );
+    }
 }
