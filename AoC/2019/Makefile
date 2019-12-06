@@ -20,6 +20,7 @@ test: all
 	@#if [ $$( ./aoc-03  -2 ) -eq        ] ; then echo -n ok ; else echo -n not ok ; fi ; echo " day 3.2"
 	@if [ $$( ./aoc-04 -1 ) -eq    1048 ] ; then echo -n ok ; else echo -n not ok ; fi ; echo " day 4.1"
 	@if [ $$( ./aoc-04 -2 ) -eq     677 ] ; then echo -n ok ; else echo -n not ok ; fi ; echo " day 4.2"
+	@if [ $$( ./aoc-05 -1 | tail -1 ) -eq 5821753 ] ; then echo -n ok ; else echo -n not ok ; fi ; echo " day 5.1"
 
 clean:
 	rm -f aoc-[0-9][0-9]
