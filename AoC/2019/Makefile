@@ -5,6 +5,12 @@ all: $(patsubst %.c,%,$(wildcard aoc-*.c))
 aoc-%: aoc-%.c aoc.h
 	$(CC) $(CFLAGS) $< -o $@
 
+aoc-02: aoc-02.c aoc.h intcode.h
+	$(CC) $(CFLAGS) $< -o $@
+
+aoc-05: aoc-05.c aoc.h intcode.h
+	$(CC) $(CFLAGS) $< -o $@
+
 test: all
 	@if [ $$( ./aoc-01 -1 ) -eq 3161483 ] ; then echo -n ok ; else echo -n not ok ; fi ; echo " day 1.1"
 	@if [ $$( ./aoc-01 -2 ) -eq 4739374 ] ; then echo -n ok ; else echo -n not ok ; fi ; echo " day 1.2"
