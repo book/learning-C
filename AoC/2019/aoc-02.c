@@ -24,7 +24,7 @@ int main( int argc, char **argv ) {
         memcpy( program, source, size );
         program[1] = 12;
         program[2] = 2;
-        run( program, 0 );
+        run( program, NULL );
         printf( "%i\n", program[0] );
     }
     else {
@@ -35,7 +35,7 @@ int main( int argc, char **argv ) {
                 memcpy( program, source, size );
                 program[1] = noun;
                 program[2] = verb;
-                run( program, 0 );
+                run( program, NULL );
                 if ( program[0] == 19690720 ) {
                     printf( "%i\n", 100 * noun + verb );
                     exit( 0 );

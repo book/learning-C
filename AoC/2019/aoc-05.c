@@ -21,6 +21,7 @@ int main( int argc, char **argv ) {
     int *program = malloc( size * sizeof( int ) );
     memcpy( program, source, size );
     if ( puzzle == 1 ) {
-        run( program, 1 );
+        int input[] = { 1, 1 };
+        run( program, input );
     }
 }

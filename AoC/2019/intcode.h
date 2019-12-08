@@ -13,7 +13,7 @@ void set_args( int *program, int *args, int pc, int count ) {
 }
 
 // the Intcode computer
-void run( int *program, int input ) {
+void run( int *program, int *input ) {
     int args[MAX_ARGS];         // opcode, arg1, arg2, etc
     int pc = 0;
     while ( 1 ) {
@@ -29,12 +29,16 @@ void run( int *program, int input ) {
             program[program[pc + 3]] = args[1] * args[2];
             pc += 4;
             break;
-        case 3:
+        case 3:                // read input
+            if ( input[0] < 1 ) {
+                fprintf( stderr, "Input undeflow: %i\n", opcode );
+                exit( EXIT_FAILURE );
+            }
             set_args( program, args, pc, 2 );
-            program[program[pc + 1]] = input;
+            program[program[pc + 1]] = input[input[0]--];
             pc += 2;
             break;
-        case 4:
+        case 4:                // write output
             set_args( program, args, pc, 2 );
             printf( "%i\n", args[1] );
             pc += 2;
@@ -42,7 +46,7 @@ void run( int *program, int input ) {
         case 99:
             return;
         default:
-            fprintf( stderr, "Unknown opcode: %i\n", opcode );
+            fprintf( stderr, "Unknown opcode: %i at %i\n", opcode, pc );
             exit( EXIT_FAILURE );
         }
     }
