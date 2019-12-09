@@ -5,14 +5,17 @@ all: $(patsubst %.c,%,$(wildcard aoc-*.c))
 stack.o: stack.c stack.h
 	$(CC) -c $(CFLAGS) -O2 -o $@ $<
 
+intcode.o: intcode.c intcode.h stack.o
+	$(CC) -c $(CFLAGS) -O2 -o intcode.o intcode.c
+
 aoc-%: aoc-%.c aoc.h
 	$(CC) $(CFLAGS) $< -o $@
 
-aoc-02: aoc-02.c aoc.h intcode.h
-	$(CC) $(CFLAGS) $< -o $@
+aoc-02: aoc-02.c aoc.h intcode.o stack.o
+	$(CC) $(CFLAGS) -o $@ intcode.o stack.o $<
 
-aoc-05: aoc-05.c aoc.h intcode.h
-	$(CC) $(CFLAGS) $< -o $@
+aoc-05: aoc-05.c aoc.h intcode.o stack.o
+	$(CC) $(CFLAGS) -o $@ intcode.o stack.o $<
 
 test-stack: test-stack.c test.h stack.o
 	$(CC) $(CFLAGS) -o $@ stack.o $<

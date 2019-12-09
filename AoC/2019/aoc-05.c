@@ -1,4 +1,7 @@
+#include <string.h>
+
 #include "aoc.h"
+#include "stack.h"
 #include "intcode.h"
 #define size 1024
 
@@ -20,8 +23,11 @@ int main( int argc, char **argv ) {
     // run the program
     int *program = malloc( size * sizeof( int ) );
     memcpy( program, source, size );
+
+    struct stack *input = create_stack(  );
     if ( puzzle == 1 ) {
-        int input[] = { 1, 1 };
+        push_stack( input, 1 );
         run( program, input );
     }
+    exit( 0 );
 }
