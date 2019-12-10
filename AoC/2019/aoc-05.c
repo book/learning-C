@@ -29,5 +29,9 @@ int main( int argc, char **argv ) {
         push_stack( input, 1 );
         run( program, input );
     }
+    else {
+        push_stack( input, 5 );
+        run( program, input );
+    }
     exit( 0 );
 }

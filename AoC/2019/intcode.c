@@ -12,6 +12,10 @@ int args_for_op[] = {
     4,                          //  2 - mul
     2,                          //  3 - input
     2,                          //  4 - output
+    3,                          //  5 - jump-if-true
+    3,                          //  6 - jump-if-false
+    4,                          //  7 - less-than
+    4,                          //  8 - equals
 };
 
 void dump_array( int count, int *args, char *mesg ) {
@@ -60,6 +64,30 @@ void run( int *program, struct stack *input ) {
             break;
         case 4:                // write output
             printf( "%i\n", args[1] );
+            pc += args_for_op[opcode];
+            break;
+        case 5:                // jump-if-true
+            if ( args[1] != 0 ) {
+                pc = args[2];
+            }
+            else {
+                pc += args_for_op[opcode];
+            }
+            break;
+        case 6:                // jump-if-false
+            if ( args[1] == 0 ) {
+                pc = args[2];
+            }
+            else {
+                pc += args_for_op[opcode];
+            }
+            break;
+        case 7:                // less than
+            program[program[pc + 3]] = args[1] < args[2];
+            pc += args_for_op[opcode];
+            break;
+        case 8:                // equals
+            program[program[pc + 3]] = args[1] == args[2];
             pc += args_for_op[opcode];
             break;
         case 99:
