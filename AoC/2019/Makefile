@@ -17,6 +17,9 @@ aoc-02: aoc-02.c aoc.h intcode.o stack.o
 aoc-05: aoc-05.c aoc.h intcode.o stack.o
 	$(CC) $(CFLAGS) -o $@ intcode.o stack.o $<
 
+run-intcode: run-intcode.c intcode.o stack.o
+	$(CC) $(CFLAGS) -o $@ intcode.o stack.o $<
+
 test-stack: test-stack.c test.h stack.o
 	$(CC) $(CFLAGS) -o $@ stack.o $<
 
