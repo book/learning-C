@@ -1,4 +1,6 @@
+SHELL=/bin/bash
 CFLAGS=-std=c11 -g -Wall -Werror -Wextra -Wpedantic
+LDADD=-lm
 
 all: $(patsubst %.c,%,$(wildcard aoc-*.c))
 
@@ -9,7 +11,7 @@ intcode.o: intcode.c intcode.h stack.o
 	$(CC) -c $(CFLAGS) -O2 -o intcode.o intcode.c
 
 aoc-%: aoc-%.c aoc.h
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $(LDADD) $< -o $@
 
 aoc-02: aoc-02.c aoc.h intcode.o stack.o
 	$(CC) $(CFLAGS) -o $@ intcode.o stack.o $<
