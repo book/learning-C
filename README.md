@@ -23,6 +23,7 @@ A combination of pairing sessions, code reviews, home work, transmission.
 ## Homework projects (to review)
 
 * Solve the [Advent of code](https://adventofcode.com/) [in C](AoC/)
+* A list of [challenging projects](http://web.eecs.utk.edu/~azh/blog/challengingprojects.html)
 
 ## Learning tools on the way
 
