@@ -5,8 +5,10 @@
 #include "hashtable.h"
 
 /* basic test function */
+int tests = 0;
 int ok( int test, char *mesg ) {
-    printf( "%sok - %s\n", test ? "" : "not ", mesg );
+    tests++;
+    printf( "%sok %d - %s\n", test ? "" : "not ", tests, mesg );
     return !test;
 }
 
@@ -86,6 +88,9 @@ int main( void ) {
     /* - destroy the hashtable */
     hashtable_destroy( &ht );
     fails += ok( ht == NULL, "hashtable freed" );
+
+/* - done testing */
+    printf( "1..%d\n", tests );
 
   BAILOUT:
     exit( ! !fails );
