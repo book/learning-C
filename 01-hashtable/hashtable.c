@@ -16,7 +16,13 @@ struct hashtable {
     size_t num_buckets;
     size_t num_items;
     struct hashtable_entry **buckets;
+    unsigned int (*hash_function)( const char *key, size_t key_len );
 };
+
+/* default hash function (very basic) */
+unsigned int hash_code_default( const char *key, size_t key_len ) {
+    return key_len ? key[0] : 0;
+}
 
 /* some private functions */
 static void hashtable_resize( struct hashtable *ht, size_t num_buckets ) {
@@ -30,8 +36,7 @@ static void hashtable_resize( struct hashtable *ht, size_t num_buckets ) {
         struct hashtable_entry *entry = ht->buckets[i];
         while( entry ) {
 
-            /* careful, this contains a copy of the hashing function */
-            unsigned int hash_code = entry->key_len ? (entry->key)[0] : 0; /* a very BASIC hash function */
+            unsigned int hash_code = ht->hash_function( entry->key, entry->key_len );
             size_t i = hash_code % num_buckets;
 
             struct hashtable_entry *new_entry = calloc( 1, sizeof( struct hashtable_entry ) );
@@ -60,9 +65,8 @@ static void hashtable_resize( struct hashtable *ht, size_t num_buckets ) {
     ht->buckets = buckets;
 }
 
-static size_t hashtable_index_for( struct hashtable *ht, const char *key, int key_len ) {
-    unsigned int hash_code = key_len ? key[0] : 0; /* a very BASIC hash function */
-    return hash_code % ht->num_buckets;
+static size_t hashtable_index_for( struct hashtable *ht, const char *key, size_t key_len ) {
+    return ht->hash_function( key, key_len ) % ht->num_buckets;
 }
 
 static struct hashtable_entry *hashtable_entry_for(
@@ -106,6 +110,7 @@ struct hashtable *hashtable_create( void ) {
     }
     ht->num_buckets = 16;
     ht->num_items = 0;
+    ht->hash_function = hash_code_default;
     ht->buckets = calloc( ht->num_buckets, sizeof( struct hashtable_entry * ));
     if (! ht->buckets) {
         exit(EXIT_FAILURE);
