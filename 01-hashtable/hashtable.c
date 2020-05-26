@@ -16,7 +16,7 @@ struct hashtable {
     size_t num_buckets;
     size_t num_items;
     struct hashtable_entry **buckets;
-    unsigned int (*hash_function)( const char *key, size_t key_len );
+    hashtable_hash_function hash_function;
 };
 
 /* default hash function (very basic) */
@@ -103,14 +103,15 @@ static struct hashtable_entry *hashtable_entry_for(
 }
 
 /* public interface */
-struct hashtable *hashtable_create( void ) {
+struct hashtable *hashtable_create( hashtable_hash_function hash_function ) {
+
     struct hashtable *ht = malloc( sizeof( struct hashtable ) );
     if (!ht) {
         exit(EXIT_FAILURE);
     }
     ht->num_buckets = 16;
     ht->num_items = 0;
-    ht->hash_function = hash_code_default;
+    ht->hash_function = hash_function ? hash_function : hash_code_default;
     ht->buckets = calloc( ht->num_buckets, sizeof( struct hashtable_entry * ));
     if (! ht->buckets) {
         exit(EXIT_FAILURE);

@@ -5,8 +5,9 @@
 
 struct hashtable;
 
-/* using a very BASIC hash function */
-struct hashtable *hashtable_create( void );
+typedef unsigned int (*hashtable_hash_function)( const char *key, size_t key_len );
+
+struct hashtable *hashtable_create( hashtable_hash_function hash_function );
 
 void hashtable_destroy( struct hashtable **ht );
 

@@ -18,7 +18,7 @@ int main( void ) {
 
 /* - create a hashtable */
     struct hashtable *ht;
-    ht = hashtable_create(  );
+    ht = hashtable_create( NULL );
     fails += ok( ht != NULL, "hashtable created" );
     if ( !ht ) {
         goto BAILOUT;
