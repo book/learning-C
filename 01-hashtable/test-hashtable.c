@@ -5,20 +5,20 @@
 #include "hashtable.h"
 
 /* basic test function */
-int tests = 0;
-int ok( int test, char *mesg ) {
-    tests++;
-    printf( "%sok %d - %s\n", test ? "" : "not ", tests, mesg );
+int global_tests = 0;
+static int ok(int test, char *mesg ) {
+    global_tests++;
+    printf( "%sok %d - %s\n", test ? "" : "not ", global_tests, mesg );
     return !test;
 }
 
 /* test script */
-int main( void ) {
+int test_hash_with_function( hashtable_hash_function hash_function ) {
     int fails = 0;
 
 /* - create a hashtable */
     struct hashtable *ht;
-    ht = hashtable_create( NULL );
+    ht = hashtable_create( hash_function );
     fails += ok( ht != NULL, "hashtable created" );
     if ( !ht ) {
         goto BAILOUT;
@@ -90,9 +90,14 @@ int main( void ) {
     fails += ok( ht == NULL, "hashtable freed" );
 
 /* - done testing */
-    printf( "1..%d\n", tests );
+    printf( "1..%d\n", global_tests );
 
   BAILOUT:
-    exit( ! !fails );
+    return fails;
 }
 
+int main( void ) {
+    int fails = 0;
+    fails += test_hash_with_function( NULL );
+    exit( ! !fails );
+}
