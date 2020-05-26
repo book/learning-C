@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #include "hashtable.h"
 
@@ -89,15 +90,23 @@ int test_hash_with_function( hashtable_hash_function hash_function ) {
     hashtable_destroy( &ht );
     fails += ok( ht == NULL, "hashtable freed" );
 
-/* - done testing */
-    printf( "1..%d\n", global_tests );
-
   BAILOUT:
     return fails;
+}
+
+unsigned int hash_function_0 ( const char *key, size_t key_len ) {
+    (void)key;    /* pretend we're using the variables */
+    (void)key_len;
+    return UINT_MAX;
 }
 
 int main( void ) {
     int fails = 0;
     fails += test_hash_with_function( NULL );
+    fails += test_hash_with_function( hash_function_0 );
+
+/* - done testing */
+    printf( "1..%d\n", global_tests );
+
     exit( ! !fails );
 }
