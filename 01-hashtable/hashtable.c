@@ -37,7 +37,7 @@ static void hashtable_resize( struct hashtable *ht, size_t num_buckets ) {
         while( entry ) {
 
             unsigned int hash_code = ht->hash_function( entry->key, entry->key_len );
-            size_t i = hash_code % num_buckets;
+            size_t j = hash_code % num_buckets;
 
             struct hashtable_entry *new_entry = calloc( 1, sizeof( struct hashtable_entry ) );
             if (!new_entry) {
@@ -46,13 +46,13 @@ static void hashtable_resize( struct hashtable *ht, size_t num_buckets ) {
             new_entry->key = entry->key;
             new_entry->key_len = entry->key_len;
             new_entry->value = entry->value;
-            new_entry->next_entry = buckets[i];
-            buckets[i] = new_entry;
+            new_entry->next_entry = buckets[j];
+            buckets[j] = new_entry;
             if (new_entry->next_entry) {
                 new_entry->next_entry->prev_entry = new_entry;
             }
 
-            /* drop the entry and move on */
+            /* drop the old entry and move on */
             struct hashtable_entry *goner = entry;
             entry = entry->next_entry;
             free( goner );
