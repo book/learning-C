@@ -150,7 +150,9 @@ void *hashtable_store( struct hashtable *ht, const char *key, size_t key_len,
     }
     struct hashtable_entry *entry =
         hashtable_entry_for( ht, key, key_len, true );
-    return entry->value = value;
+    void * old_value = entry->value;
+    entry->value = value;
+    return old_value;
 }
 
 void *hashtable_fetch( struct hashtable *ht, const char *key, size_t key_len ) {
