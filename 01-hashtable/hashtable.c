@@ -125,6 +125,7 @@ void hashtable_destroy( struct hashtable **ht ) {
         while( entry ) {
             struct hashtable_entry *goner = entry;
             entry = entry->next_entry;
+            free( (void *)goner->key );
             free( goner );
         }
     }
