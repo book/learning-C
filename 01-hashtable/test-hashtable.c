@@ -67,11 +67,11 @@ int test_hash_with_function( hashtable_hash_function hash_function ) {
 
 /* add 100 items, forcing a few resizes */
     for ( int i = 0; i < 100; i++ ) {
-	char key[4];
+    char key[4];
         sprintf( key, "%d", i );
-	/* val will be freed when we remove the items from the hashtable */
-	char * val = malloc( strlen(key) + 1 );
-	sprintf( val, "%d", i );
+    /* val will be freed when we remove the items from the hashtable */
+    char * val = malloc( strlen(key) + 1 );
+    sprintf( val, "%d", i );
         hashtable_store( ht, key, strlen(key), (void*) val );
     }
     fails += ok( hashtable_size(ht) == 102, "hashtable size == 102" );
@@ -82,19 +82,19 @@ int test_hash_with_function( hashtable_hash_function hash_function ) {
 
 /* check we can find all items */
     for ( int i = 99; i >= 0; i-- ) {
-	char key[4];
+        char key[4];
         sprintf( key, "%d", i );
-	char * expect = malloc( strlen(key) + 1 );
-	sprintf( expect, "%d", i );
-	char * actual = hashtable_fetch( ht, key, strlen(key) );
+        char * expect = malloc( strlen(key) + 1 );
+        sprintf( expect, "%d", i );
+        char * actual = hashtable_fetch( ht, key, strlen(key) );
         sprintf( mesg, "fetched key %s", key );
         fails += ok( strcmp( actual, expect ) == 0, mesg );
-	free( expect );
+        free( expect );
 
-	char * actual2 = hashtable_delete( ht, key, strlen(key) );
+        char * actual2 = hashtable_delete( ht, key, strlen(key) );
         sprintf( mesg, "deleted key %s", key );
         fails += ok( actual == actual2, mesg );
-	free( actual );
+        free( actual );
     }
 
     /* - hashtable is almost empty... */

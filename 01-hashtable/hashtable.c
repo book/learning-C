@@ -96,7 +96,7 @@ static struct hashtable_entry *hashtable_entry_for(
             exit(EXIT_FAILURE);
         }
         memcpy( (char *)entry->key, key, key_len);
-	*(char*)(entry->key + key_len)='\0';
+        *(char*)(entry->key + key_len)='\0';
         entry->key_len = key_len;
         ht->buckets[i] = entry;
         ht->num_items++;
