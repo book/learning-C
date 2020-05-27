@@ -16,6 +16,7 @@ static int ok(int test, char *mesg ) {
 /* test script */
 int test_hash_with_function( hashtable_hash_function hash_function ) {
     int fails = 0;
+    char mesg[128];
 
 /* - create a hashtable */
     struct hashtable *ht;
@@ -68,6 +69,7 @@ int test_hash_with_function( hashtable_hash_function hash_function ) {
     for ( int i = 0; i < 100; i++ ) {
 	char key[4];
         sprintf( key, "%d", i );
+	/* val will be freed when we remove the items from the hashtable */
 	char * val = malloc( strlen(key) + 1 );
 	sprintf( val, "%d", i );
         hashtable_store( ht, key, strlen(key), (void*) val );
@@ -82,9 +84,28 @@ int test_hash_with_function( hashtable_hash_function hash_function ) {
     for ( int i = 99; i >= 0; i-- ) {
 	char key[4];
         sprintf( key, "%d", i );
-	char * val = malloc( strlen(key) + 1 );
-        fails += ok( strcmp( hashtable_fetch( ht, key, strlen(key) ), val ), key );
+	char * expect = malloc( strlen(key) + 1 );
+	sprintf( expect, "%d", i );
+	char * actual = hashtable_fetch( ht, key, strlen(key) );
+        sprintf( mesg, "fetched key %s", key );
+        fails += ok( strcmp( actual, expect ) == 0, mesg );
+	free( expect );
+
+	char * actual2 = hashtable_delete( ht, key, strlen(key) );
+        sprintf( mesg, "deleted key %s", key );
+        fails += ok( actual == actual2, mesg );
+	free( actual );
     }
+
+    /* - hashtable is almost empty... */
+    fails += ok( hashtable_size( ht ) == 2, "hashtable is almost empty" );
+    char * item = hashtable_delete( ht, "foo2", 4 );
+    fails += ok( strcmp( item, "bar2" ) == 0, "deleted key foo2" );
+    item = hashtable_delete( ht, "", 0 );
+    fails += ok( strcmp( item, "bar2" ) == 0, "deleted NULL/empty key" );
+
+    /* - hashtable should be empty */
+    fails += ok( hashtable_size( ht ) == 0, "hashtable is empty" );
 
     /* - destroy the hashtable */
     hashtable_destroy( &ht );
