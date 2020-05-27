@@ -154,16 +154,28 @@ void *hashtable_fetch( struct hashtable *ht, const char *key, size_t key_len ) {
 }
 
 int hashtable_exists( struct hashtable *ht, const char *key, size_t key_len );
+
 void *hashtable_delete( struct hashtable *ht, const char *key, size_t key_len ) {
     struct hashtable_entry *entry =
         hashtable_entry_for( ht, key, key_len, false );
-    if ( !entry ) return NULL;
-    if ( entry->prev_entry )
-       entry->prev_entry->next_entry = entry->next_entry;
+    if ( !entry )
+        return NULL;
+    if ( entry->prev_entry ) {
+        entry->prev_entry->next_entry = entry->next_entry;
+    }
+    /* if there's no previous entry, then the entry to delete was the first */
+    /* find our bucket, and point it to its successor, if any */
+    else {
+        size_t i = hashtable_index_for( ht, key, key_len );
+        ht->buckets[i] = entry->next_entry;
+        if ( ht->buckets[i] ) {
+            ht->buckets[i]->prev_entry = NULL;
+        }
+    }
+
     void *value = entry->value;
     ht->num_items--;
     free( (char*) entry->key );
     free( entry );
     return value;
 }
-
