@@ -19,9 +19,14 @@ struct hashtable {
     hashtable_hash_function hash_function;
 };
 
-/* default hash function (very basic) */
+/* default hash function (from K&R) */
 unsigned int hash_code_default( const char *key, size_t key_len ) {
-    return key_len ? key[0] : 0;
+    unsigned int hashval = 0;
+    if ( !key ) { return hashval; }
+    for ( size_t i = 0; i < key_len; i++ ) {
+        hashval = key[i] + (31 * hashval);
+    }
+    return hashval;
 }
 
 /* some private functions */
